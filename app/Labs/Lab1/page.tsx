@@ -287,7 +287,7 @@ to get dummy text<br/>
 
 <a href="https://www.lipsum.com">Go to Lipsum</a><br/>
 
-<a id="wd-github" href="https://github.com/YOUR_USERNAME/YOUR_REPO">
+<a id="wd-github" href="https://github.com/suripeddis/kambaz-next-js.git">
   My GitHub Repository
 </a>
 </div>

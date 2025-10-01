@@ -146,14 +146,14 @@ export default function Lab1() {
       </div>
       <div id="wd-images">
         <h4>Image tag</h4>
-        Loading an image from the internet: <br />
+        Loading an image from the internet: <b />
         <img
           id="wd-starship"
           width="400px"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
         />
-        <br />
-        Loading a local image: <br />
+        <br/>
+        Loading a local image: <br/>
         <img
           id="wd-fallphoto"
           src="/FallPhoto.png"
@@ -208,7 +208,7 @@ export default function Lab1() {
 </button>
     <h5 id="wd-radio-buttons">Radio buttons</h5>
 
-    <label>Favorite movie genre:</label><br />
+    <label>Favorite movie genre:</label><br/>
 
     <input type="radio" name="radio-genre" id="wd-radio-comedy"/>
     <label htmlFor="wd-radio-comedy">Comedy</label><br />
@@ -217,7 +217,7 @@ export default function Lab1() {
     <label htmlFor="wd-radio-drama">Drama</label><br />
 
     <input type="radio" name="radio-genre" id="wd-radio-scifi"/>
-    <label htmlFor="wd-radio-scifi">Science Fiction</label><br />
+    <label htmlFor="wd-radio-scifi">Science Fiction</label><br/>
 
     <input type="radio" name="radio-genre" id="wd-radio-fantasy"/>
     <label htmlFor="wd-radio-fantasy">Fantasy</label>
@@ -258,31 +258,31 @@ export default function Lab1() {
 </select>
 <h4>Other HTML field types</h4>
 
-<label htmlFor="wd-text-fields-email"> Email: </label>
+<label htmlFor="wd-text-fields-email">Email:</label>
 <input type="email"
        placeholder="saumyasuripeddi@gmail.com"
        id="wd-text-fields-email"/><br/> 
 
-<label htmlFor="wd-text-fields-salary-start"> Starting salary:</label>
+<label htmlFor="wd-text-fields-salary-start">Starting salary:</label>
 <input type="number"
        defaultValue="100000"
        placeholder="1000"
        id="wd-text-fields-salary-start"/><br/>
 
-<label htmlFor="wd-text-fields-rating"> Rating: </label>
+<label htmlFor="wd-text-fields-rating">Rating </label>
 <input type="range"
        defaultValue="4"
        max="5"
        placeholder="Doe"
        id="wd-text-fields-rating"/><br/>
 
-<label htmlFor="wd-text-fields-dob"> Date of birth: </label>
+<label htmlFor="wd-text-fields-dob"> Date of birth:</label>
 <input type="date"
        defaultValue="2000-01-21"
        id="wd-text-fields-dob"/><br/>
 <h4>Anchor tag</h4>
 Please
-<a href="https://www.lipsum.com" id="wd-lipsum"> click here </a>
+<a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
 to get dummy text<br/>
 
 <a href="https://www.lipsum.com">Go to Lipsum</a><br/>

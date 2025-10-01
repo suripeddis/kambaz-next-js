@@ -5,6 +5,12 @@ import Borders from "./Borders";
 import Margins from "./Margins";
 import Corners from "./Corners";
 import Dimensions from "./Dimensions";
+import PositionRelative from "./Positions";
+import ZIndex from "./ZIndex";
+import Float from "./Float";
+import GridLayout from "./GridLayout";
+import Flex from "./Flex";
+import ReactIcons from "./ReactIcons";
 export default function Lab2() {
   return (
     <div id="wd-lab2">
@@ -62,4 +68,10 @@ export default function Lab2() {
 <Borders />
 <Corners />
 <Dimensions />
+<PositionRelative />
+<ZIndex />
+<Float />
+<GridLayout />
+<Flex />
+<ReactIcons />
     </div>);}

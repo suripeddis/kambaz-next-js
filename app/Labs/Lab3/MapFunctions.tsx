@@ -4,17 +4,19 @@ export default function MapFunction() {
   const todos = ["Buy milk", "Feed the pets"];
   const squares = numberArray1.map(square);
   const cubes = numberArray1.map((a) => a * a * a);
+
   return (
     <div id="wd-map-function">
       <h4>Map Function</h4>
-      squares = {squares} <br />
-      cubes = {cubes} <br />
+      squares = {squares.join(", ")} <br />
+      cubes = {cubes.join(", ")} <br />
       Todos:
       <ol>
-        {todos.map((todo) => (
-          <li>{todo}</li>
+        {todos.map((todo, index) => (
+          <li key={index}>{todo}</li>
         ))}
-      </ol> <hr/>
+      </ol>
+      <hr />
     </div>
   );
 }

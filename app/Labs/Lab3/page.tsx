@@ -9,7 +9,20 @@ import LegacyFunctions from "./LegacyFunctions";
 import ArrowFunctions from "./ArrowFunctions";
 import ImpliedReturn from "./ImpliedReturn";
 import SimpleArrays from "./SimpleArrays";
-
+import ArrayIndexAndLength from "./ArrayIndexAndLength";
+import AddingAndRemovingToFromArrays from "./AddingAndRemovingToFromArrays";
+import FindFunction from "./FindFunction";
+import ForLoops from "./ForLoops"
+import MapFunction from "./MapFunctions"
+import FindIndex from "./FindIndex";
+import FilterFunction from "./FilterFunctions"
+import JsonStringify from "./JsonStringify";
+import House from "./House";
+import Spreading from "./Spreader";
+import Destructing from "./Destructing";
+import FunctionDestructing from "./FunctionDestructing";
+import Math from "./Math";
+import DestructingImports from "./DestructingImports";
 export default function Lab3() {
   return(
     <div id="wd-lab3">
@@ -25,6 +38,19 @@ export default function Lab3() {
       <ArrowFunctions />
       <ImpliedReturn />
       <SimpleArrays />
+      <ArrayIndexAndLength />
+      <AddingAndRemovingToFromArrays /> 
+      <FindFunction />
+      <ForLoops />
+      <MapFunction />
+      <FindIndex />
+      <FilterFunction />
+      <JsonStringify />
+      <House />
+      <Spreading />
+      <Destructing />
+      <FunctionDestructing />
+      <DestructingImports />
     </div>
   );
 }

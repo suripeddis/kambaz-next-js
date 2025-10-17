@@ -20,11 +20,11 @@ export default function CourseNavigation({ cid }: Props) {
   ];
 
   return (
-    <ListGroup
-      id="wd-courses-navigation"
-      className="wd fs-5 rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
-      style={{ width: 200 }}
-    >
+<ListGroup
+  id="wd-courses-navigation"
+  className="wd fs-5 rounded-0 bg-black"
+  style={{ width: 200, minHeight: "100vh" }}
+>
       {links.map((link) => {
         const href = `/Courses/${cid}/${link}`;
         const active = pathname.endsWith(`/${link}`);

@@ -31,8 +31,12 @@ export default async function CoursesLayout({
       <hr />
 
       <div className="d-flex">
-        <CourseNavigation cid={cid} />             
-        <div className="flex-grow-1 ms-5">{children}</div>
+  
+      <div style={{ width: 200, flexShrink: 0 }}>
+        <CourseNavigation cid={cid} />
+       </div>
+
+      <div className="flex-grow-1 ms-4">{children}</div>
       </div>
     </div>
   );

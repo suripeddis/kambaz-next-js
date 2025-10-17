@@ -1,20 +1,21 @@
+// app/(Kambaz)/Courses/[cid]/layout.tsx
 import courses from "../../Database/courses.json";
 import { FaAlignJustify } from "react-icons/fa6";
 import CourseNavigation from "./Navigation";
 import Breadcrumb from "./Breadcrumb";
 import type { ReactNode } from "react";
 
-type Course = { _id: string; name: string };
-
-export default function CoursesLayout({
+export default async function CoursesLayout({
   children,
   params,
 }: {
   children: ReactNode;
-  params: { cid: string };
+  params: Promise<{ cid: string }>;
 }) {
-  const { cid } = params;
-  const course = (courses as Course[]).find((c) => c._id === cid);
+  const { cid } = await params;                    
+  const course = (courses as { _id: string; name: string }[]).find(
+    (c) => c._id === cid
+  );
 
   return (
     <div id="wd-courses">
@@ -30,7 +31,7 @@ export default function CoursesLayout({
       <hr />
 
       <div className="d-flex">
-        <CourseNavigation cid={cid} />
+        <CourseNavigation cid={cid} />             
         <div className="flex-grow-1 ms-5">{children}</div>
       </div>
     </div>

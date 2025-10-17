@@ -5,18 +5,35 @@ import users from "../../../../Database/users.json";
 import enrollments from "../../../../Database/enrollments.json";
 import { FaUserCircle } from "react-icons/fa";
 
-export default function PeopleTable() {
-  const { cid } = useParams() as { cid: string };
+type User = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  loginId: string;
+  section?: string;
+  role?: string;
+  lastActivity?: string;
+  totalActivity?: string;
+};
 
-  const courseUsers = users.filter((usr: any) =>
-    enrollments.some(
-      (enr: any) => enr.user === usr._id && enr.course === cid
+type Enrollment = {
+  _id: string;
+  user: string;   // user id
+  course: string; // course id (cid)
+};
+
+export default function PeopleTable() {
+  const { cid } = useParams();
+
+  const enrolledUsers = (users as User[]).filter((u) =>
+    (enrollments as Enrollment[]).some(
+      (e) => e.user === u._id && e.course === cid
     )
   );
 
   return (
     <div id="wd-people-table" className="table-responsive">
-      <table className="table table-striped align-middle">
+      <table className="table">
         <thead>
           <tr>
             <th>Name</th>
@@ -28,10 +45,10 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {courseUsers.map((user: any) => (
+          {enrolledUsers.map((user) => (
             <tr key={user._id}>
-              <td className="text-nowrap">
-                <FaUserCircle className="me-2 fs-3 text-secondary" />
+              <td className="wd-full-name text-nowrap">
+                <FaUserCircle className="me-2 fs-1 text-secondary" />
                 <span className="wd-first-name">{user.firstName}</span>{" "}
                 <span className="wd-last-name">{user.lastName}</span>
               </td>

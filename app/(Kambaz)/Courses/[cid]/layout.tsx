@@ -2,7 +2,6 @@ import courses from "../../Database/courses.json";
 import { FaAlignJustify } from "react-icons/fa6";
 import CourseNavigation from "./Navigation";
 import Breadcrumb from "./Breadcrumb";
-import Link from "next/link";
 
 export default function CoursesLayout({
   children,

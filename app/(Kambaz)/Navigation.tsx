@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { AiOutlineDashboard } from "react-icons/ai";
@@ -11,10 +12,10 @@ export default function KambazNavigation() {
   const pathname = usePathname();
   const links = [
     { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses",   path: "/Dashboard", icon: LiaBookSolid }, // per spec
-    { label: "Calendar",  path: "/Calendar",  icon: IoCalendarOutline },
-    { label: "Inbox",     path: "/Inbox",     icon: FaInbox },
-    { label: "Labs",      path: "/Labs",      icon: LiaCogSolid },
+    { label: "Courses", path: "/Dashboard", icon: LiaBookSolid },
+    { label: "Calendar", path: "/Calendar", icon: IoCalendarOutline },
+    { label: "Inbox", path: "/Inbox", icon: FaInbox },
+    { label: "Labs", path: "/Labs", icon: LiaCogSolid },
   ];
   const isActive = (label: string) =>
     pathname.toLowerCase().includes(label.toLowerCase());
@@ -32,14 +33,22 @@ export default function KambazNavigation() {
         action
         className="bg-black border-0 text-center"
       >
-        <img src="/images/NEU.png" width={75} alt="NEU" />
+        <Image
+          src="/images/NEU.png"
+          width={75}
+          height={75}
+          alt="Northeastern University logo"
+          priority
+        />
       </ListGroupItem>
 
       <ListGroupItem
         as={Link}
         href="/Account"
         className={`text-center border-0 bg-black ${
-          pathname.includes("Account") ? "bg-white text-danger" : "bg-black text-white"
+          pathname.includes("Account")
+            ? "bg-white text-danger"
+            : "bg-black text-white"
         }`}
       >
         <FaRegCircleUser
@@ -60,7 +69,8 @@ export default function KambazNavigation() {
           }`}
         >
           <Icon className="fs-1 text-danger" />
-          <br />{label}
+          <br />
+          {label}
         </ListGroupItem>
       ))}
     </ListGroup>

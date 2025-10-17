@@ -16,7 +16,7 @@ type Lesson = {
 type Module = {
   _id: string;
   name: string;
-  course: string;     // course id (cid)
+  course: string;    
   lessons?: Lesson[];
 };
 

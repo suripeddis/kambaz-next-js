@@ -2,7 +2,6 @@ const subtract = (a: number, b: number) => {
     return a - b;
   };
   
-  
   export default function ArrowFunctions() {
     const threeMinusOne = subtract(3, 1);
     console.log(threeMinusOne);

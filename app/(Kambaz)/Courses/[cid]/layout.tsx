@@ -6,14 +6,14 @@ import type { ReactNode } from "react";
 
 type Course = { _id: string; name: string };
 
-export default async function CoursesLayout({
+export default function CoursesLayout({
   children,
   params,
 }: {
   children: ReactNode;
-  params: Promise<{ cid: string }>;
+  params: { cid: string };
 }) {
-  const { cid } = await params; 
+  const { cid } = params;
   const course = (courses as Course[]).find((c) => c._id === cid);
 
   return (
@@ -22,6 +22,7 @@ export default async function CoursesLayout({
         <FaAlignJustify className="me-4 fs-4 mb-1" />
         {course ? course.name : "Course Not Found"}
       </h2>
+
       <div className="text-secondary mb-3">
         <Breadcrumb course={course} />
       </div>

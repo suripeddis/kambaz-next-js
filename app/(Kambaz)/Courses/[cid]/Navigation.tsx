@@ -1,19 +1,47 @@
-import Link from "next/link";
+"use client";
 
-export default function CourseNavigation() {
-    return (
-      <div id="wd-courses-navigation">
-        <Link href="/Courses/1234/Home" id="wd-course-home-link">Home</Link><br/>
-        <Link href="/Courses/1234/Modules" id="wd-course-modules-link">Modules
-          </Link><br/>
-        <Link href="/Courses/1234/Piazza" id="wd-course-piazza-link">Piazza</Link><br/>
-        <Link href="/Courses/1234/Zoom" id="wd-course-zoom-link">Zoom</Link><br/>
-        <Link href="/Courses/1234/Assignments" id="wd-course-assignments-link">
-            Assignments</Link><br/>
-        <Link href="/Courses/1234/Quizzes" id="wd-course-quizzes-link">Quizzes
-          </Link><br/>
-        <Link href="/Courses/1234/Grades" id="wd-course-grades-link">Grades</Link><br/>
-        <Link href="/Courses/1234/People/Table" id="wd-course-people-link">People</Link><br/>
-      </div>
-    );}
-  
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
+
+type Props = { cid: string };
+
+export default function CourseNavigation({ cid }: Props) {
+  const pathname = usePathname();
+  const links = [
+    "Home",
+    "Modules",
+    "Piazza",
+    "Zoom",
+    "Assignments",
+    "Quizzes",
+    "Grades",
+    "People",
+  ];
+
+  return (
+    <ListGroup
+      id="wd-courses-navigation"
+      className="wd fs-5 rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
+      style={{ width: 200 }}
+    >
+      {links.map((link) => {
+        const href = `/Courses/${cid}/${link}`;
+        const active = pathname.endsWith(`/${link}`);
+        return (
+          <ListGroupItem
+            key={link}
+            as={Link}
+            href={href}
+            className={`border-0 text-center ${
+              active ? "bg-white text-danger" : "bg-black text-white"
+            }`}
+            id={`wd-course-${link.toLowerCase()}-link`}
+          >
+            {link}
+          </ListGroupItem>
+        );
+      })}
+    </ListGroup>
+  );
+}

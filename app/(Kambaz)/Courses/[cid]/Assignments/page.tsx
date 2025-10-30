@@ -1,105 +1,75 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { Row, Col, Button, ListGroup, ListGroupItem, InputGroup, FormControl } from "react-bootstrap";
-import { BiSearch } from "react-icons/bi";
-import { FaPlus } from "react-icons/fa6";
-import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
-import GreenCheckmark from "../Modules/GreenCheckmark";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "react-bootstrap";
+import { deleteAssignment } from "./reducer";
 
 export default function AssignmentsPage() {
-  const { cid } = useParams() as { cid: string };
+  const { cid } = useParams<{ cid: string }>();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((s: any) => s.assignmentsReducer);
+
+  const courseAssignments = (assignments || []).filter(
+    (a: any) => a.course === cid
+  );
 
   return (
-    <div id="wd-assignments" className="p-2">
-      <div className="d-flex align-items-center mb-3">
-        <div className="flex-fill">
-          <InputGroup>
-            <InputGroup.Text><BiSearch /></InputGroup.Text>
-            <FormControl placeholder="Search for Assignment" />
-          </InputGroup>
-        </div>
-        <div className="ms-2">
-          <Button variant="secondary" className="me-2">
-            <FaPlus className="me-1" /> Group
-          </Button>
-          <Button variant="danger">
-            <FaPlus className="me-1" /> Assignment
-          </Button>
-        </div>
+    <div id="wd-assignments" className="wd-main-content-offset p-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="m-0">Assignments</h2>
+        <Button
+          variant="danger"
+          onClick={() => router.push(`/Courses/${cid}/Assignments/Editor`)}
+          id="wd-add-assignment"
+        >
+          + Assignment
+        </Button>
       </div>
 
-      <Row>
-        <Col md={12}>
-          <div className="fw-semibold text-secondary mb-2">
-            ASSIGNMENTS <span className="float-end text-muted">40% of Total</span>
+      <div className="list-group">
+        {courseAssignments.map((a: any) => (
+          <div key={a._id} className="list-group-item d-flex justify-content-between">
+            <div
+              role="button"
+              onClick={() =>
+                router.push(`/Courses/${cid}/Assignments/Editor?aid=${a._id}`)
+              }
+            >
+              <div className="fw-semibold">{a.name}</div>
+              <div className="text-muted small">
+                {a.points} pts • Due {a.dueDate || "—"}
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2">
+              <Link
+                href={`/Courses/${cid}/Assignments/Editor?aid=${a._id}`}
+                className="btn btn-warning btn-sm"
+              >
+                Edit
+              </Link>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => {
+                  if (window.confirm("Delete this assignment?")) {
+                    dispatch(deleteAssignment(a._id));
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
+        ))}
 
-          <ListGroup className="rounded-0">
-            <ListGroupItem className="border-gray p-3">
-              <div className="d-flex align-items-start">
-                <BsGripVertical className="me-2 fs-3 text-secondary" />
-                <div className="flex-fill">
-                  <Link href={`/Courses/${cid}/Assignments/A1/Edit`} className="fw-semibold text-decoration-none text-dark">
-                    A1
-                  </Link>
-                  <div className="text-muted small">
-                    Multiple Modules &nbsp;|&nbsp; Not available until May 6 at 12:00am &nbsp;|&nbsp; Due May 13 at 11:59pm &nbsp;|&nbsp; 100 pts
-                  </div>
-                </div>
-                <div className="d-flex align-items-center">
-                  <GreenCheckmark />
-                  <BsThreeDotsVertical className="fs-5 ms-2" />
-                </div>
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="border-gray p-3">
-              <div className="d-flex align-items-start">
-                <BsGripVertical className="me-2 fs-3 text-secondary" />
-                <div className="flex-fill">
-                  <Link href={`/Courses/${cid}/Assignments/A2/Edit`} className="fw-semibold text-decoration-none text-dark">
-                    A2
-                  </Link>
-                  <div className="text-muted small">
-                    Multiple Modules &nbsp;|&nbsp; Not available until May 13 at 12:00am &nbsp;|&nbsp; Due May 20 at 11:59pm &nbsp;|&nbsp; 100 pts
-                  </div>
-                </div>
-                <div className="d-flex align-items-center">
-                  <GreenCheckmark />
-                  <BsThreeDotsVertical className="fs-5 ms-2" />
-                </div>
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="border-gray p-3">
-              <div className="d-flex align-items-start">
-                <BsGripVertical className="me-2 fs-3 text-secondary" />
-                <div className="flex-fill">
-                  <Link href={`/Courses/${cid}/Assignments/A3/Edit`} className="fw-semibold text-decoration-none text-dark">
-                    A3
-                  </Link>
-                  <div className="text-muted small">
-                    Multiple Modules &nbsp;|&nbsp; Not available until May 20 at 12:00am &nbsp;|&nbsp; Due May 27 at 11:59pm &nbsp;|&nbsp; 100 pts
-                  </div>
-                </div>
-                <div className="d-flex align-items-center">
-                  <GreenCheckmark />
-                  <BsThreeDotsVertical className="fs-5 ms-2" />
-                </div>
-              </div>
-            </ListGroupItem>
-          </ListGroup>
-        </Col>
-      </Row>
-
-      <style jsx global>{`
-        #wd-assignments .list-group-item {
-          --bs-list-group-border-color: gray;
-          border-left: 3px solid green !important;
-        }
-      `}</style>
+        {courseAssignments.length === 0 && (
+          <div className="text-muted">No assignments yet.</div>
+        )}
+      </div>
     </div>
   );
 }

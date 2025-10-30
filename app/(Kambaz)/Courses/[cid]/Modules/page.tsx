@@ -1,62 +1,73 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import modulesData from "../../../Database/modules.json";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { ListGroup, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import ModulesControls from "./ModulesControls";
 import ModuleControlButtons from "./ModuleControlButtons";
-import LessonControlButtons from "./LessonControlButtons";
-
-type Lesson = {
-  _id: string;
-  name: string;
-};
-
-type Module = {
-  _id: string;
-  name: string;
-  course: string;    
-  lessons?: Lesson[];
-};
+import {
+  addModule,
+  deleteModule,
+  editModule,
+  updateModule,
+} from "./reducer";
 
 export default function Modules() {
-  const { cid } = useParams<{ cid: string }>();
-  const modules = modulesData as Module[];
-
-  const courseModules = modules.filter((m) => m.course === cid);
+  const { cid } = useParams();
+  const [moduleName, setModuleName] = useState("");
+  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const dispatch = useDispatch();
 
   return (
-    <div>
-      <ModulesControls />
-      <br /><br /><br /><br />
+    <div id="wd-modules" className="wd-main-content-offset p-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="m-0">Modules</h2>
+        <ModulesControls
+          moduleName={moduleName}
+          setModuleName={setModuleName}
+          addModule={() => {
+            dispatch(addModule({ name: moduleName, course: cid }));
+            setModuleName("");
+          }}
+        />
+      </div>
 
-      <ListGroup id="wd-modules" className="rounded-0">
-        {courseModules.map((module) => (
-          <ListGroupItem
-            key={module._id}
-            className="wd-module p-0 mb-5 fs-5 border-gray"
-          >
-            <div className="wd-title p-3 ps-2 bg-secondary">
-              <BsGripVertical className="me-2 fs-3" /> {module.name}{" "}
-              <ModuleControlButtons />
-            </div>
+      <ListGroup id="wd-modules-list" className="rounded-0">
+        {modules
+          .filter((m: any) => m.course === cid)
+          .map((module: any) => (
+            <ListGroup.Item
+              key={module._id}
+              className="p-3 ps-2 bg-secondary d-flex align-items-center justify-content-between"
+            >
+              <div className="d-flex align-items-center flex-wrap">
+                <BsGripVertical className="me-2 fs-3 text-dark" />
+                {!module.editing && <span>{module.name}</span>}
+                {module.editing && (
+                  <FormControl
+                    className="w-auto d-inline-block"
+                    onChange={(e) =>
+                      dispatch(updateModule({ ...module, name: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        dispatch(updateModule({ ...module, editing: false }));
+                      }
+                    }}
+                    defaultValue={module.name}
+                  />
+                )}
+              </div>
 
-            {module.lessons && module.lessons.length > 0 && (
-              <ListGroup className="wd-lessons rounded-0">
-                {module.lessons.map((lesson) => (
-                  <ListGroupItem
-                    key={lesson._id}
-                    className="wd-lesson p-3 ps-1"
-                  >
-                    <BsGripVertical className="me-2 fs-3" /> {lesson.name}{" "}
-                    <LessonControlButtons />
-                  </ListGroupItem>
-                ))}
-              </ListGroup>
-            )}
-          </ListGroupItem>
-        ))}
+              <ModuleControlButtons
+                moduleId={module._id}
+                deleteModule={(moduleId) => dispatch(deleteModule(moduleId))}
+                editModule={(moduleId) => dispatch(editModule(moduleId))}
+              />
+            </ListGroup.Item>
+          ))}
       </ListGroup>
     </div>
   );

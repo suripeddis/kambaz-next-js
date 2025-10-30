@@ -1,39 +1,62 @@
 "use client";
 
 import Link from "next/link";
-import { FormControl } from "react-bootstrap";
+import { redirect } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { FormControl, Button } from "react-bootstrap";
+import { setCurrentUser } from "../reducer";
+import * as db from "../../Database";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState<{ username?: string; password?: string }>({});
+  const dispatch = useDispatch();
+
+  const signin = () => {
+    const user = db.users.find(
+      (u: any) =>
+        u.username === credentials.username && u.password === credentials.password
+    );
+    if (!user) return;
+    dispatch(setCurrentUser(user));
+    redirect("/Dashboard");
+  };
+
   return (
-    <div id="wd-signin-screen">
-      <h1>Sign in</h1>
+    <div id="wd-signin-screen" className="p-4" style={{ maxWidth: "400px", margin: "0 auto" }}>
+      <h1 className="mb-3">Sign in</h1>
 
       <FormControl
-        id="wd-username"
-        placeholder="username"
+        value={credentials.username || ""}
+        onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
         className="mb-2"
+        placeholder="username"
+        id="wd-username"
       />
-      <br />
+
       <FormControl
-        id="wd-password"
+        value={credentials.password || ""}
+        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+        className="mb-3"
         placeholder="password"
         type="password"
-        className="mb-2"
+        id="wd-password"
       />
-      <br />
 
-      <Link
+      <Button
+        onClick={signin}
         id="wd-signin-btn"
-        href="/Account/Profile"
-        className="btn btn-primary w-100 mb-2"
+        className="w-100 mb-3"
+        variant="primary"
       >
         Sign in
-      </Link>
-      <br />
+      </Button>
 
-      <Link id="wd-signup-link" href="/Account/Signup">
-        Sign up
-      </Link>
+      <div className="text-center">
+        <Link id="wd-signup-link" href="/Account/Signup">
+          Sign up
+        </Link>
+      </div>
     </div>
   );
 }

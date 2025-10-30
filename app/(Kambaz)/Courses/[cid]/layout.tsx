@@ -1,43 +1,25 @@
-// app/(Kambaz)/Courses/[cid]/layout.tsx
-import courses from "../../Database/courses.json";
-import { FaAlignJustify } from "react-icons/fa6";
-import CourseNavigation from "./Navigation";
-import Breadcrumb from "./Breadcrumb";
-import type { ReactNode } from "react";
+"use client";
 
-export default async function CoursesLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: Promise<{ cid: string }>;
-}) {
-  const { cid } = await params;                    
-  const course = (courses as { _id: string; name: string }[]).find(
-    (c) => c._id === cid
-  );
+import { ReactNode, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
-  return (
-    <div id="wd-courses">
-      <h2 className="text-danger">
-        <FaAlignJustify className="me-4 fs-4 mb-1" />
-        {course ? course.name : "Course Not Found"}
-      </h2>
+export default function CourseLayout({ children }: { children: ReactNode }) {
+  const { cid } = useParams<{ cid: string }>();
+  const router = useRouter();
+  const { currentUser } = useSelector((s: any) => s.accountReducer);
+  const { enrollments } = useSelector((s: any) => s.enrollmentsReducer);
 
-      <div className="text-secondary mb-3">
-        <Breadcrumb course={course} />
-      </div>
+  useEffect(() => {
+    if (!currentUser) return; // let unauthenticated users hit Dashboard/Signin flows elsewhere
+    const isEnrolled = enrollments.some(
+      (e: any) => e.user === currentUser._id && e.course === cid
+    );
+    const isFaculty = currentUser.role === "FACULTY" || currentUser.role === "ADMIN" || currentUser.role === "TA";
+    if (!isEnrolled && !isFaculty) {
+      router.replace("/Dashboard");
+    }
+  }, [cid, currentUser, enrollments, router]);
 
-      <hr />
-
-      <div className="d-flex">
-  
-      <div style={{ width: 200, flexShrink: 0 }}>
-        <CourseNavigation cid={cid} />
-       </div>
-
-      <div className="flex-grow-1 ms-4">{children}</div>
-      </div>
-    </div>
-  );
+  return <>{children}</>;
 }

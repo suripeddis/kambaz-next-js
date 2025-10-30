@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Nav, NavItem, NavLink } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { RootState } from "@/app/(Kambaz)/store";
 
 export default function AccountNavigation() {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const pathname = usePathname();
 
   const links = currentUser
@@ -20,11 +21,7 @@ export default function AccountNavigation() {
     <Nav variant="pills" className="flex-column">
       {links.map(({ label, href }) => (
         <NavItem key={href}>
-          <NavLink
-            as={Link}
-            href={href}
-            active={pathname === href}
-          >
+          <NavLink as={Link} href={href} active={pathname === href}>
             {label}
           </NavLink>
         </NavItem>

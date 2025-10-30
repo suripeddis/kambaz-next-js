@@ -1,18 +1,34 @@
 "use client";
-import { redirect } from "next/dist/client/components/navigation";
+
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentUser } from "../reducer";
 import { Button, FormControl } from "react-bootstrap";
+import { setCurrentUser } from "../reducer";
+import { RootState } from "@/app/(Kambaz)/store";
+
+interface UserProfile {
+  _id?: string;
+  username?: string;
+  password?: string;
+  firstName?: string;
+  lastName?: string;
+  dob?: string;
+  email?: string;
+  role?: string;
+}
 
 export default function Profile() {
-  const [profile, setProfile] = useState<any>({});
+  const [profile, setProfile] = useState<UserProfile>({});
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
 
   useEffect(() => {
-    if (!currentUser) redirect("/Account/Signin");
-    else setProfile(currentUser);
+    if (!currentUser) {
+      redirect("/Account/Signin");
+    } else {
+      setProfile(currentUser);
+    }
   }, [currentUser]);
 
   const signout = () => {

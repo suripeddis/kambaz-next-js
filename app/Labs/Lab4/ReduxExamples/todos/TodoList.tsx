@@ -6,6 +6,11 @@ import TodoForm from "./TodoForm";
 import TodoItem from "./TodoItem";
 import type { RootState } from "../../store";
 
+interface Todo {
+    id: number;
+    text: string;
+}
+
 export default function TodoList() {
   const { todos } = useSelector((s: RootState | any) => s.todosReducer);
 
@@ -20,5 +25,5 @@ export default function TodoList() {
       </ListGroup>
       <hr />
     </div>
-  );
+  )
 }

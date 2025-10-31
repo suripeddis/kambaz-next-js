@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as db from "../Database";

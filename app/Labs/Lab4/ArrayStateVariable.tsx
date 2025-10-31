@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -6,9 +7,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 
 export default function ArrayStateVariable() {
-  // your local example array state (kept simple)
   const [numbers] = useState([1, 2, 3, 4]);
-  // read todos from redux
   const { todos } = useSelector((s: RootState | any) => s.todosReducer);
 
   return (

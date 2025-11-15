@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -13,7 +14,7 @@ import * as client from "../../client";
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
-  const { modules } = useSelector((state) => state.modulesReducer);
+  const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
 
   const fetchModules = async () => {
@@ -35,12 +36,12 @@ export default function Modules() {
 
   const onRemoveModule = async (moduleId: string) => {
     await client.deleteModule(moduleId);
-    dispatch(setModules(modules.filter((m) => m._id !== moduleId)));
+    dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
-  const onUpdateModule = async (moduleData) => {
+  const onUpdateModule = async (moduleData: any) => {
     await client.updateModule(moduleData);
-    const newModules = modules.map((m) => (m._id === moduleData._id ? moduleData : m));
+    const newModules = modules.map((m: any) => (m._id === moduleData._id ? moduleData : m));
     dispatch(setModules(newModules));
   };
 
@@ -56,7 +57,7 @@ export default function Modules() {
       </div>
 
       <ListGroup id="wd-modules-list" className="rounded-0">
-        {modules.map((mod) => (
+        {modules.map((mod: any) => (
           <ListGroup.Item
             key={mod._id}
             className="p-3 ps-2 bg-secondary d-flex align-items-center justify-content-between"
@@ -69,7 +70,7 @@ export default function Modules() {
                   className="w-auto d-inline-block"
                   onChange={(e) =>
                     dispatch(setModules(
-                      modules.map((m) =>
+                      modules.map((m: any) =>
                         m._id === mod._id ? { ...m, name: e.target.value } : m
                       )
                     ))

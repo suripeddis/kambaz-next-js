@@ -205,7 +205,7 @@ export default function Dashboard() {
       </div>
 
       {currentUser && !showAllCourses && visibleCourses.length === 0 && (
-       <p className="text-muted mt-3">You aren't enrolled in any courses yet.</p>
+       <p className="text-muted mt-3">You aren&apos;t enrolled in any courses yet.</p>
       )}
     </div>
   );

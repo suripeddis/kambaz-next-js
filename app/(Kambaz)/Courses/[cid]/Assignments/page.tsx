@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "react-bootstrap";
-import { deleteAssignment } from "./reducer";
+import { setAssignments } from "./reducer";
+import * as client from "../../client";
 
 export default function AssignmentsPage() {
   const { cid } = useParams<{ cid: string }>();
@@ -13,9 +15,19 @@ export default function AssignmentsPage() {
   const dispatch = useDispatch();
   const { assignments } = useSelector((s: any) => s.assignmentsReducer);
 
-  const courseAssignments = (assignments || []).filter(
-    (a: any) => a.course === cid
-  );
+  const fetchAssignments = async () => {
+    const assignments = await client.findAssignmentsForCourse(cid);
+    dispatch(setAssignments(assignments));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
+  const onDeleteAssignment = async (assignmentId: string) => {
+    await client.deleteAssignment(assignmentId);
+    dispatch(setAssignments(assignments.filter((a: any) => a._id !== assignmentId)));
+  };
 
   return (
     <div id="wd-assignments" className="wd-main-content-offset p-4">
@@ -31,7 +43,7 @@ export default function AssignmentsPage() {
       </div>
 
       <div className="list-group">
-        {courseAssignments.map((a: any) => (
+        {assignments.map((a: any) => (
           <div key={a._id} className="list-group-item d-flex justify-content-between">
             <div
               role="button"
@@ -39,7 +51,7 @@ export default function AssignmentsPage() {
                 router.push(`/Courses/${cid}/Assignments/Editor?aid=${a._id}`)
               }
             >
-              <div className="fw-semibold">{a.name}</div>
+              <div className="fw-semibold">{a.title}</div>
               <div className="text-muted small">
                 {a.points} pts • Due {a.dueDate || "—"}
               </div>
@@ -57,7 +69,7 @@ export default function AssignmentsPage() {
                 size="sm"
                 onClick={() => {
                   if (window.confirm("Delete this assignment?")) {
-                    dispatch(deleteAssignment(a._id));
+                    onDeleteAssignment(a._id);
                   }
                 }}
               >
@@ -67,7 +79,7 @@ export default function AssignmentsPage() {
           </div>
         ))}
 
-        {courseAssignments.length === 0 && (
+        {assignments.length === 0 && (
           <div className="text-muted">No assignments yet.</div>
         )}
       </div>

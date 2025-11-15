@@ -4,9 +4,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 import { Button, FormControl, Form } from "react-bootstrap";
-import { addAssignment, updateAssignment } from "../reducer";
+import { setAssignments } from "../reducer";
+import * as client from "../../../client";
 
 export default function AssignmentEditor() {
   const { cid } = useParams<{ cid: string }>();
@@ -21,7 +21,7 @@ export default function AssignmentEditor() {
   const [form, setForm] = useState<any>({
     _id: "",
     course: cid ?? "",
-    name: "",
+    title: "",
     description: "",
     points: 100,
     dueDate: "",
@@ -34,7 +34,7 @@ export default function AssignmentEditor() {
       setForm({
         _id: existing._id ?? "",
         course: cid ?? "",
-        name: existing.name ?? "",
+        title: existing.title ?? "",
         description: existing.description ?? "",
         points: existing.points ?? 100,
         dueDate: existing.dueDate ?? "",
@@ -44,13 +44,24 @@ export default function AssignmentEditor() {
     }
   }, [aid, cid]);
 
-  const save = () => {
-    if (aid) {
-      dispatch(updateAssignment(form));
-    } else {
-      dispatch(addAssignment({ ...form, _id: uuidv4() }));
+  const save = async () => {
+    try {
+      if (aid) {
+        // Update existing
+        await client.updateAssignment(form);
+        dispatch(setAssignments(
+          assignments.map((a: any) => (a._id === form._id ? form : a))
+        ));
+      } else {
+        // Create new
+        const newAssignment = await client.createAssignment(cid, form);
+        dispatch(setAssignments([newAssignment, ...assignments]));
+      }
+      router.push(`/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save assignment");
     }
-    router.push(`/Courses/${cid}/Assignments`);
   };
 
   const cancel = () => router.push(`/Courses/${cid}/Assignments`);
@@ -60,12 +71,12 @@ export default function AssignmentEditor() {
       <h2 className="mb-3">{aid ? "Edit Assignment" : "New Assignment"}</h2>
 
       <Form className="mb-3">
-        <Form.Label className="fw-semibold">Name</Form.Label>
+        <Form.Label className="fw-semibold">Title</Form.Label>
         <FormControl
           className="mb-3"
-          value={form.name ?? ""}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          id="wd-assignment-name"
+          value={form.title ?? ""}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          id="wd-assignment-title"
         />
 
         <Form.Label className="fw-semibold">Description</Form.Label>

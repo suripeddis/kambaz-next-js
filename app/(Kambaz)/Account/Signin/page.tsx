@@ -2,25 +2,28 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { FormControl, Button } from "react-bootstrap";
 import { setCurrentUser } from "../reducer";
-import * as db from "../../Database";
+import * as client from "../client";
 
 export default function Signin() {
   const [credentials, setCredentials] = useState<{ username?: string; password?: string }>({});
   const dispatch = useDispatch();
+  const router = useRouter();  // ADD THIS LINE
 
-  const signin = () => {
-    const user = db.users.find(
-      (u: any) =>
-        u.username === credentials.username && u.password === credentials.password
-    );
-    if (!user) return;
-    dispatch(setCurrentUser(user));
-    redirect("/Dashboard");
+  const signin = async () => {
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      dispatch(setCurrentUser(user));
+      router.push("/Dashboard");  // Use router.push instead of redirect
+    } catch (error) {
+      console.error(error);
+      alert("Invalid credentials");
+    }
   };
 
   return (

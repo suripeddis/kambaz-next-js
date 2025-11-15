@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import * as db from "../../../Database";
+
 type Assignment = any;
 
 interface AssignmentsState {
@@ -9,13 +9,16 @@ interface AssignmentsState {
 }
 
 const initialState: AssignmentsState = {
-  assignments: (db as any).assignments ?? [],
+  assignments: [],
 };
 
 const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    setAssignments: (state, action: PayloadAction<Assignment[]>) => {
+      state.assignments = action.payload;
+    },
     addAssignment: (state, action: PayloadAction<Assignment>) => {
       state.assignments = [action.payload, ...state.assignments];
     },
@@ -32,6 +35,6 @@ const assignmentsSlice = createSlice({
   },
 });
 
-export const { addAssignment, updateAssignment, deleteAssignment } =
+export const { setAssignments, addAssignment, updateAssignment, deleteAssignment } =
   assignmentsSlice.actions;
 export default assignmentsSlice.reducer;

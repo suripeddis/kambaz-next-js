@@ -1,4 +1,4 @@
-// app/Labs/Lab5/client.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
 export const HTTP_SERVER =

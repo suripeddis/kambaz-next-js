@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-import * as client from "./client"; // <-- adjust if needed
+import * as client from "./client"; 
 
 export default function WorkingWithObjects() {
   const [assignment, setAssignment] = useState<any>(null);

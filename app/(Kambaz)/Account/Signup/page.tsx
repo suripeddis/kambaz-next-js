@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -11,12 +11,13 @@ import * as client from "../client";
 export default function Signup() {
   const [user, setUser] = useState({});
   const dispatch = useDispatch();
+  const router = useRouter();
   
   const signup = async () => {
     try {
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
-      redirect("/Profile");
+      router.push("/Account/Profile");
     } catch (error) {
       console.error(error);
       alert("Username already taken");

@@ -4,30 +4,41 @@ import { FaPlus } from "react-icons/fa6";
 import PeopleTable from "../../Courses/[cid]/People/Table/PeopleTable";
 import * as client from "../client";
 
+interface User {
+  _id?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  section?: string;
+  role?: string;
+}
+
 export default function Users() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [role, setRole] = useState("");
   const [name, setName] = useState("");
 
   const fetchUsers = async () => {
-    const data = await client.findAllUsers();
+    const data: User[] = await client.findAllUsers();
     setUsers(data);
   };
 
-  const filterUsersByRole = async (role: string) => {
-    setRole(role);
-    if (role) {
-      const data = await client.findUsersByRole(role);
+  const filterUsersByRole = async (r: string) => {
+    setRole(r);
+    if (r) {
+      const data: User[] = await client.findUsersByRole(r);
       setUsers(data);
     } else {
       fetchUsers();
     }
   };
 
-  const filterUsersByName = async (name: string) => {
-    setName(name);
-    if (name) {
-      const data = await client.findUsersByPartialName(name);
+  const filterUsersByName = async (n: string) => {
+    setName(n);
+    if (n) {
+      const data: User[] = await client.findUsersByPartialName(n);
       setUsers(data);
     } else {
       fetchUsers();
@@ -35,7 +46,7 @@ export default function Users() {
   };
 
   const createUser = async () => {
-    const user = await client.createUser({
+    const newUser: User = {
       firstName: "New",
       lastName: `User${users.length + 1}`,
       username: `newuser${Date.now()}`,
@@ -43,8 +54,10 @@ export default function Users() {
       email: `email${users.length + 1}@neu.edu`,
       section: "S101",
       role: "STUDENT",
-    });
-    setUsers([...users, user]);
+    };
+
+    const created: User = await client.createUser(newUser);
+    setUsers([...users, created]);
   };
 
   useEffect(() => {

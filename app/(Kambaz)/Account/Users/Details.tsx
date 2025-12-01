@@ -2,6 +2,16 @@
 import { useEffect, useState } from "react";
 import * as client from "../client";
 
+interface User {
+  _id?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  email?: string;
+  role?: string;
+  section?: string;
+}
+
 export default function PeopleDetails({
   uid,
   onClose,
@@ -9,12 +19,12 @@ export default function PeopleDetails({
   uid: string;
   onClose: () => void;
 }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState<any>({});
+  const [form, setForm] = useState<User>({});
 
   const loadUser = async () => {
-    const data = await client.findUserById(uid);
+    const data: User = await client.findUserById(uid);
     setUser(data);
     setForm(data);
   };
@@ -50,14 +60,14 @@ export default function PeopleDetails({
           <>
             <input
               className="form-control mb-2"
-              value={form.firstName}
+              value={form.firstName || ""}
               onChange={(e) =>
                 setForm({ ...form, firstName: e.target.value })
               }
             />
             <input
               className="form-control"
-              value={form.lastName}
+              value={form.lastName || ""}
               onChange={(e) =>
                 setForm({ ...form, lastName: e.target.value })
               }
@@ -74,7 +84,7 @@ export default function PeopleDetails({
       {editing ? (
         <input
           className="form-control mb-2"
-          value={form.username}
+          value={form.username || ""}
           onChange={(e) =>
             setForm({ ...form, username: e.target.value })
           }
@@ -89,7 +99,7 @@ export default function PeopleDetails({
       {editing ? (
         <input
           className="form-control mb-2"
-          value={form.email}
+          value={form.email || ""}
           onChange={(e) =>
             setForm({ ...form, email: e.target.value })
           }
@@ -104,7 +114,7 @@ export default function PeopleDetails({
       {editing ? (
         <select
           className="form-select mb-2"
-          value={form.role}
+          value={form.role || ""}
           onChange={(e) =>
             setForm({ ...form, role: e.target.value })
           }
@@ -124,7 +134,7 @@ export default function PeopleDetails({
       {editing ? (
         <input
           className="form-control mb-2"
-          value={form.section}
+          value={form.section || ""}
           onChange={(e) =>
             setForm({ ...form, section: e.target.value })
           }
@@ -161,7 +171,7 @@ export default function PeopleDetails({
             className="btn btn-secondary"
             onClick={() => {
               setEditing(false);
-              setForm(user); // reset
+              setForm(user); 
             }}
           >
             Cancel

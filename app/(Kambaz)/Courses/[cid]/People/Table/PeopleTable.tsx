@@ -2,7 +2,21 @@
 import { useState } from "react";
 import PeopleDetails from "../../../../Account/Users/Details";
 
-export default function PeopleTable({ users, fetchUsers }: any) {
+// Local User type for this table
+interface User {
+  _id?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  role?: string;
+}
+
+interface PeopleTableProps {
+  users: User[];
+  fetchUsers: () => void;
+}
+
+export default function PeopleTable({ users, fetchUsers }: PeopleTableProps) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const openDetails = (id: string) => {
@@ -11,7 +25,7 @@ export default function PeopleTable({ users, fetchUsers }: any) {
 
   const closeDetails = () => {
     setSelectedUserId(null);
-    fetchUsers(); 
+    fetchUsers(); // refresh list
   };
 
   return (
@@ -30,8 +44,12 @@ export default function PeopleTable({ users, fetchUsers }: any) {
         </thead>
 
         <tbody>
-          {users.map((u: any) => (
-            <tr key={u._id} onClick={() => openDetails(u._id)} style={{ cursor: "pointer" }}>
+          {users.map((u: User) => (
+            <tr
+              key={u._id}
+              onClick={() => openDetails(u._id as string)}
+              style={{ cursor: "pointer" }}
+            >
               <td>{u.firstName} {u.lastName}</td>
               <td>{u.username}</td>
               <td>{u.role}</td>

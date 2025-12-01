@@ -11,14 +11,14 @@ import * as client from "../client";
 export default function Signin() {
   const [credentials, setCredentials] = useState<{ username?: string; password?: string }>({});
   const dispatch = useDispatch();
-  const router = useRouter();  // ADD THIS LINE
+  const router = useRouter();  
 
   const signin = async () => {
     try {
       const user = await client.signin(credentials);
       if (!user) return;
       dispatch(setCurrentUser(user));
-      router.push("/Dashboard");  // Use router.push instead of redirect
+      router.push("/Dashboard");  
     } catch (error) {
       console.error(error);
       alert("Invalid credentials");

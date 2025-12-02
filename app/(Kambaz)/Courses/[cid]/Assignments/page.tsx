@@ -1,88 +1,78 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
-import { Button } from "react-bootstrap";
-import { setAssignments } from "./reducer";
 import * as client from "../../client";
+import { ListGroup, Button } from "react-bootstrap";
+
+interface Assignment {
+  _id: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  points: number;
+}
 
 export default function AssignmentsPage() {
-  const { cid } = useParams<{ cid: string }>();
+  const { cid } = useParams();
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { assignments } = useSelector((s: any) => s.assignmentsReducer);
 
-  const fetchAssignments = async () => {
-    const assignments = await client.findAssignmentsForCourse(cid);
-    dispatch(setAssignments(assignments));
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+
+  const loadAssignments = async () => {
+    if (!cid) return;
+    const list = await client.findAssignmentsForCourse(cid as string);
+    setAssignments(list);
   };
 
   useEffect(() => {
-    fetchAssignments();
+    loadAssignments();
   }, [cid]);
 
-  const onDeleteAssignment = async (assignmentId: string) => {
-    await client.deleteAssignment(assignmentId);
-    dispatch(setAssignments(assignments.filter((a: any) => a._id !== assignmentId)));
+  const onDelete = async (aid: string) => {
+    await client.deleteAssignment(aid);
+    setAssignments(assignments.filter((a) => a._id !== aid));
   };
 
   return (
-    <div id="wd-assignments" className="wd-main-content-offset p-4">
+    <div className="p-4 text-white">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 className="m-0">Assignments</h2>
+
         <Button
-          variant="danger"
+          variant="primary"
           onClick={() => router.push(`/Courses/${cid}/Assignments/Editor`)}
-          id="wd-add-assignment"
         >
-          + Assignment
+          + Add Assignment
         </Button>
       </div>
 
-      <div className="list-group">
-        {assignments.map((a: any) => (
-          <div key={a._id} className="list-group-item d-flex justify-content-between">
+      <ListGroup>
+        {assignments.map((a) => (
+          <ListGroup.Item
+            key={a._id}
+            className="bg-secondary text-white d-flex justify-content-between align-items-center p-3"
+          >
             <div
               role="button"
               onClick={() =>
-                router.push(`/Courses/${cid}/Assignments/Editor?aid=${a._id}`)
+                router.push(`/Courses/${cid}/Assignments/Editor?id=${a._id}`)
               }
             >
-              <div className="fw-semibold">{a.title}</div>
-              <div className="text-muted small">
-                {a.points} pts • Due {a.dueDate || "—"}
-              </div>
+              <b>{a.title}</b>
+              <br />
+              Due: {a.dueDate}
+              <br />
+              Points: {a.points}
             </div>
 
-            <div className="d-flex align-items-center gap-2">
-              <Link
-                href={`/Courses/${cid}/Assignments/Editor?aid=${a._id}`}
-                className="btn btn-warning btn-sm"
-              >
-                Edit
-              </Link>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => {
-                  if (window.confirm("Delete this assignment?")) {
-                    onDeleteAssignment(a._id);
-                  }
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
+            <Button variant="danger" onClick={() => onDelete(a._id)}>
+              Delete
+            </Button>
+          </ListGroup.Item>
         ))}
-
-        {assignments.length === 0 && (
-          <div className="text-muted">No assignments yet.</div>
-        )}
-      </div>
+      </ListGroup>
     </div>
   );
 }

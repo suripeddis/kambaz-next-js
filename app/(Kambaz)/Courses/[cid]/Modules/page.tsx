@@ -13,11 +13,14 @@ import * as client from "../../client";
 
 export default function Modules() {
   const { cid } = useParams();
-  const [moduleName, setModuleName] = useState("");
-  const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
 
+  const modules = useSelector((state: any) => state.modulesReducer.modules);
+
+  const [moduleName, setModuleName] = useState("");
+
   const fetchModules = async () => {
+    if (!cid) return;
     const modulesList = await client.findModulesForCourse(cid as string);
     dispatch(setModules(modulesList));
   };
@@ -27,10 +30,13 @@ export default function Modules() {
   }, [cid]);
 
   const onCreateModule = async () => {
-    if (!cid) return;
-    const newModule = { name: moduleName, course: cid };
-    const createdModule = await client.createModuleForCourse(cid as string, newModule);
-    dispatch(setModules([...modules, createdModule]));
+    if (!cid || !moduleName.trim()) return;
+
+    const created = await client.createModuleForCourse(cid as string, {
+      name: moduleName,
+    });
+
+    dispatch(setModules([...modules, created]));
     setModuleName("");
   };
 
@@ -39,16 +45,21 @@ export default function Modules() {
     dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
-  const onUpdateModule = async (moduleData: any) => {
-    await client.updateModule(moduleData);
-    const newModules = modules.map((m: any) => (m._id === moduleData._id ? moduleData : m));
-    dispatch(setModules(newModules));
+  const onUpdateModule = async (updated: any) => {
+    await client.updateModule(updated);
+
+    const newList = modules.map((m: any) =>
+      m._id === updated._id ? updated : m
+    );
+
+    dispatch(setModules(newList));
   };
 
   return (
     <div id="wd-modules" className="wd-main-content-offset p-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 className="m-0">Modules</h2>
+
         <ModulesControls
           moduleName={moduleName}
           setModuleName={setModuleName}
@@ -64,31 +75,37 @@ export default function Modules() {
           >
             <div className="d-flex align-items-center flex-wrap">
               <BsGripVertical className="me-2 fs-3 text-dark" />
+
               {!mod.editing && <span>{mod.name}</span>}
+
               {mod.editing && (
                 <FormControl
                   className="w-auto d-inline-block"
+                  defaultValue={mod.name}
                   onChange={(e) =>
-                    dispatch(setModules(
-                      modules.map((m: any) =>
-                        m._id === mod._id ? { ...m, name: e.target.value } : m
+                    dispatch(
+                      setModules(
+                        modules.map((m: any) =>
+                          m._id === mod._id
+                            ? { ...m, name: e.target.value }
+                            : m
+                        )
                       )
-                    ))
+                    )
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       onUpdateModule({ ...mod, editing: false });
                     }
                   }}
-                  defaultValue={mod.name}
                 />
               )}
             </div>
 
             <ModuleControlButtons
               moduleId={mod._id}
-              deleteModule={(moduleId) => onRemoveModule(moduleId)}
-              editModule={(moduleId) => dispatch(editModule(moduleId))}
+              deleteModule={() => onRemoveModule(mod._id)}
+              editModule={() => dispatch(editModule(mod._id))}
             />
           </ListGroup.Item>
         ))}

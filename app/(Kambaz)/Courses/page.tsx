@@ -2,8 +2,14 @@
 import { useEffect, useState } from "react";
 import { fetchAllCourses } from "./client";
 
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+}
+
 export default function CoursesPage() {
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   const loadCourses = async () => {
     const data = await fetchAllCourses();
@@ -19,7 +25,7 @@ export default function CoursesPage() {
       <h1 className="mb-4">Courses</h1>
 
       <ul className="list-group">
-        {courses.map((course: any) => (
+        {courses.map((course) => (
           <li key={course._id} className="list-group-item">
             <b>{course.name}</b>
             <br />

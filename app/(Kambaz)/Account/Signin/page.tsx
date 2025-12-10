@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { FormControl, Button } from "react-bootstrap";
@@ -12,6 +12,7 @@ import * as db from "../../Database";
 export default function Signin() {
   const [credentials, setCredentials] = useState<{ username?: string; password?: string }>({});
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const signin = () => {
     const user = db.users.find(
@@ -20,7 +21,7 @@ export default function Signin() {
     );
     if (!user) return;
     dispatch(setCurrentUser(user));
-    redirect("/Dashboard");
+    router.push("/Dashboard");
   };
 
   return (

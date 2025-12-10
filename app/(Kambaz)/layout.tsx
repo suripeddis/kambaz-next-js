@@ -8,9 +8,11 @@ import KambazNavigation from "./Navigation";
 export default function KambazLayout({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <div className="d-flex">
+      <div id="wd-kambaz">
         <KambazNavigation />
-        <div className="flex-fill p-4">{children}</div>
+        <div style={{ marginLeft: "120px" }} className="p-4">
+          {children}
+        </div>
       </div>
     </Provider>
   );

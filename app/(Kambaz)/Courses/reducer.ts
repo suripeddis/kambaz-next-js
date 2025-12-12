@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   courses: [],
@@ -13,7 +14,8 @@ const coursesSlice = createSlice({
       state.courses = action.payload;
     },
     addNewCourse: (state, { payload: course }) => {
-      state.courses = [...state.courses, course] as any;
+      const newCourse = { ...course, _id: uuidv4() };
+      state.courses = [...state.courses, newCourse] as any;
     },
     deleteCourse: (state, { payload: courseId }) => {
       state.courses = state.courses.filter((c: any) => c._id !== courseId);

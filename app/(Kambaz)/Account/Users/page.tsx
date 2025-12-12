@@ -78,7 +78,7 @@ export default function Users() {
           <option value="Student">Students</option>
           <option value="TA">Assistants</option>
           <option value="Faculty">Faculty</option>
-          <option value="Admin">Administrators</option>
+          <option value="ADMIN">Administrators</option>
         </select>
 
         <input

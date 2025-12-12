@@ -12,7 +12,7 @@ import { setModules, editModule } from "./reducer";
 import * as client from "../../client";
 
 export default function Modules() {
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid: string }>();
   const dispatch = useDispatch();
 
   const modules = useSelector((state: any) => state.modulesReducer.modules);
@@ -21,7 +21,7 @@ export default function Modules() {
 
   const fetchModules = async () => {
     if (!cid) return;
-    const modulesList = await client.findModulesForCourse(cid as string);
+    const modulesList = await client.findModulesForCourse(cid);
     dispatch(setModules(modulesList));
   };
 
@@ -32,7 +32,7 @@ export default function Modules() {
   const onCreateModule = async () => {
     if (!cid || !moduleName.trim()) return;
 
-    const created = await client.createModuleForCourse(cid as string, {
+    const created = await client.createModuleForCourse(cid, {
       name: moduleName,
     });
 
@@ -41,18 +41,20 @@ export default function Modules() {
   };
 
   const onRemoveModule = async (moduleId: string) => {
-    await client.deleteModule(moduleId);
+    await client.deleteModule(cid, moduleId);
     dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
   const onUpdateModule = async (updated: any) => {
-    await client.updateModule(updated);
+    await client.updateModule(cid, updated);
 
-    const newList = modules.map((m: any) =>
-      m._id === updated._id ? updated : m
+    dispatch(
+      setModules(
+        modules.map((m: any) =>
+          m._id === updated._id ? updated : m
+        )
+      )
     );
-
-    dispatch(setModules(newList));
   };
 
   return (

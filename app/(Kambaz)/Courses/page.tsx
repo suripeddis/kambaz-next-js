@@ -1,5 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   fetchAllCourses,
   findMyCourses,
@@ -14,6 +16,11 @@ interface Course {
 }
 
 export default function CoursesPage() {
+  const { currentUser } = useSelector(
+    (s: { accountReducer: { currentUser: { _id: string } | null } }) =>
+      s.accountReducer
+  );
+
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [myCourseIds, setMyCourseIds] = useState<string[]>([]);
   const [showMyCourses, setShowMyCourses] = useState(false);
@@ -22,7 +29,7 @@ export default function CoursesPage() {
     const all = await fetchAllCourses();
     setAllCourses(all);
 
-    const mine = await findMyCourses(); // returns array of courses
+    const mine = await findMyCourses();
     const ids = mine.map((c: Course) => c._id);
     setMyCourseIds(ids);
   };
@@ -31,14 +38,17 @@ export default function CoursesPage() {
     loadEverything();
   }, []);
 
-  const isEnrolled = (courseId: string) => myCourseIds.includes(courseId);
+  const isEnrolled = (courseId: string) =>
+    myCourseIds.includes(courseId);
 
   const toggleEnroll = async (courseId: string) => {
+    if (!currentUser) return;
+
     if (isEnrolled(courseId)) {
-      await unenrollFromCourse(courseId);
+      await unenrollFromCourse(currentUser._id, courseId);
       setMyCourseIds((prev) => prev.filter((id) => id !== courseId));
     } else {
-      await enrollInCourse(courseId);
+      await enrollInCourse(currentUser._id, courseId);
       setMyCourseIds((prev) => [...prev, courseId]);
     }
   };
@@ -81,7 +91,9 @@ export default function CoursesPage() {
 
             <button
               className={
-                isEnrolled(course._id) ? "btn btn-danger" : "btn btn-success"
+                isEnrolled(course._id)
+                  ? "btn btn-danger"
+                  : "btn btn-success"
               }
               onClick={() => toggleEnroll(course._id)}
             >

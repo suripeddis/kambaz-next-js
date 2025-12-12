@@ -22,12 +22,18 @@ const slice = createSlice({
     toggleShowAll: (s) => {
       s.showAllCourses = !s.showAllCourses;
     },
+
+    setEnrollments: (s, a: PayloadAction<Enrollment[]>) => {
+      s.enrollments = a.payload;
+    },
+
     enroll: (s, a: PayloadAction<Enrollment>) => {
       const exists = s.enrollments.some(
         (e) => e.user === a.payload.user && e.course === a.payload.course
       );
       if (!exists) s.enrollments.unshift(a.payload);
     },
+
     unenroll: (s, a: PayloadAction<Enrollment>) => {
       s.enrollments = s.enrollments.filter(
         (e) => !(e.user === a.payload.user && e.course === a.payload.course)
@@ -36,5 +42,7 @@ const slice = createSlice({
   },
 });
 
-export const { toggleShowAll, enroll, unenroll } = slice.actions;
+export const { toggleShowAll, setEnrollments, enroll, unenroll } =
+  slice.actions;
+
 export default slice.reducer;

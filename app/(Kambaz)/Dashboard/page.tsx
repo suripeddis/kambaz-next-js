@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCourses } from "../Courses/reducer";
 import { toggleShowAll, enroll, unenroll } from "../Enrollments/reducer";
-import * as client from "../Courses/client";
+import * as courseClient from "../Courses/client";
+import * as enrollmentClient from "../Enrollments/client";
 import { FormControl, Button } from "react-bootstrap";
 import Link from "next/link";
 
@@ -28,76 +29,45 @@ export default function Dashboard() {
   });
 
   const fetchCourses = async () => {
-    try {
-      const courses = await client.findMyCourses();
-      dispatch(setCourses(courses));
-    } catch (error) {
-      console.error(error);
-    }
+    const courses = await courseClient.findMyCourses();
+    dispatch(setCourses(courses));
   };
 
   useEffect(() => {
     fetchCourses();
-  }, [currentUser]);
+  }, []);
 
   const onAddNewCourse = async () => {
-    try {
-      const newCourse = await client.createCourse(course);
-      dispatch(setCourses([...courses, newCourse]));
-    } catch (error) {
-      console.error(error);
-    }
+    const newCourse = await courseClient.createCourse(course);
+    dispatch(setCourses([...courses, newCourse]));
   };
 
   const onDeleteCourse = async (courseId: string) => {
-    try {
-      await client.deleteCourse(courseId);
-      dispatch(setCourses(courses.filter((c: any) => c._id !== courseId)));
-    } catch (error) {
-      console.error(error);
-    }
+    await courseClient.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((c: any) => c._id !== courseId)));
   };
 
   const onUpdateCourse = async () => {
-    try {
-      await client.updateCourse(course);
-      dispatch(
-        setCourses(
-          courses.map((c: any) =>
-            c._id === course._id ? course : c
-          )
-        )
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await courseClient.updateCourse(course);
+    dispatch(
+      setCourses(courses.map((c: any) => (c._id === course._id ? course : c)))
+    );
   };
 
   const handleEnroll = async (courseId: string) => {
-    try {
-      await client.enrollInCourse(currentUser._id, courseId);
-      dispatch(enroll({ user: currentUser._id, course: courseId }));
-      fetchCourses();
-    } catch (error) {
-      console.error(error);
-    }
+    await enrollmentClient.enrollInCourse(currentUser._id, courseId);
+    dispatch(enroll({ user: currentUser._id, course: courseId }));
   };
 
   const handleUnenroll = async (courseId: string) => {
-    try {
-      await client.unenrollFromCourse(currentUser._id, courseId);
-      dispatch(unenroll({ user: currentUser._id, course: courseId }));
-      fetchCourses();
-    } catch (error) {
-      console.error(error);
-    }
+    await enrollmentClient.unenrollFromCourse(currentUser._id, courseId);
+    dispatch(unenroll({ user: currentUser._id, course: courseId }));
   };
 
   const isEnrolled = (cid: string) =>
-    !!currentUser &&
+    currentUser &&
     enrollments.some(
-      (e: any) =>
-        e.user === currentUser._id && e.course === cid
+      (e: any) => e.user === currentUser._id && e.course === cid
     );
 
   const visibleCourses = currentUser
@@ -107,17 +77,10 @@ export default function Dashboard() {
     : courses;
 
   return (
-    <div id="wd-dashboard" className="wd-main-content-offset p-4">
+    <div className="p-4">
       <div className="d-flex justify-content-between align-items-center">
-        <h1 id="wd-dashboard-title" className="mb-0">
-          Dashboard
-        </h1>
-
-        <Button
-          variant="primary"
-          onClick={() => dispatch(toggleShowAll())}
-          id="wd-enrollments-toggle"
-        >
+        <h1>Dashboard</h1>
+        <Button onClick={() => dispatch(toggleShowAll())}>
           Enrollments {showAllCourses ? "ON" : "OFF"}
         </Button>
       </div>
@@ -126,10 +89,7 @@ export default function Dashboard() {
 
       <h5>
         New Course
-        <button
-          className="btn btn-primary float-end"
-          onClick={onAddNewCourse}
-        >
+        <button className="btn btn-primary float-end" onClick={onAddNewCourse}>
           Add
         </button>
         <button
@@ -141,41 +101,30 @@ export default function Dashboard() {
       </h5>
 
       <FormControl
-        value={course.name}
         className="mb-2"
-        onChange={(e) =>
-          setCourse({ ...course, name: e.target.value })
-        }
+        value={course.name}
+        onChange={(e) => setCourse({ ...course, name: e.target.value })}
       />
 
       <FormControl
         as="textarea"
-        value={course.description}
         rows={3}
+        value={course.description}
         onChange={(e) =>
-          setCourse({
-            ...course,
-            description: e.target.value,
-          })
+          setCourse({ ...course, description: e.target.value })
         }
       />
 
       <hr />
 
-      <h4 className="mb-3">
-        Published Courses ({visibleCourses.length})
-      </h4>
+      <h4>Published Courses ({visibleCourses.length})</h4>
 
       <div className="row row-cols-1 row-cols-md-5 g-4">
         {visibleCourses.map((c: any) => (
           <div key={c._id} className="col">
-            <div className="card rounded-3 overflow-hidden">
+            <div className="card">
               <Link href={`/Courses/${c._id}`}>
-                <img
-                  src={c.image}
-                  className="card-img-top"
-                  alt={c.name}
-                />
+                <img src={c.image} className="card-img-top" />
               </Link>
 
               <div className="card-body">
@@ -186,20 +135,14 @@ export default function Dashboard() {
                   (isEnrolled(c._id) ? (
                     <button
                       className="btn btn-danger me-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUnenroll(c._id);
-                      }}
+                      onClick={() => handleUnenroll(c._id)}
                     >
                       Unenroll
                     </button>
                   ) : (
                     <button
                       className="btn btn-success me-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleEnroll(c._id);
-                      }}
+                      onClick={() => handleEnroll(c._id)}
                     >
                       Enroll
                     </button>
@@ -207,28 +150,20 @@ export default function Dashboard() {
 
                 <button
                   className="btn btn-warning me-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCourse(c);
-                  }}
+                  onClick={() => setCourse(c)}
                 >
                   Edit
                 </button>
 
                 <button
                   className="btn btn-danger"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDeleteCourse(c._id);
-                  }}
+                  onClick={() => onDeleteCourse(c._id)}
                 >
                   Delete
                 </button>
 
                 <Link href={`/Courses/${c._id}`}>
-                  <button className="btn btn-primary float-end">
-                    Go
-                  </button>
+                  <button className="btn btn-primary float-end">Go</button>
                 </Link>
               </div>
             </div>
@@ -236,13 +171,11 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {currentUser &&
-        !showAllCourses &&
-        visibleCourses.length === 0 && (
-          <p className="text-muted mt-3">
-            You aren&apos;t enrolled in any courses yet.
-          </p>
-        )}
+      {currentUser && !showAllCourses && visibleCourses.length === 0 && (
+        <p className="text-muted mt-3">
+          You aren&apos;t enrolled in any courses yet.
+        </p>
+      )}
     </div>
   );
 }

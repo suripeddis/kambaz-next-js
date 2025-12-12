@@ -15,14 +15,14 @@ interface Assignment {
 }
 
 export default function AssignmentsPage() {
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid: string }>();
   const router = useRouter();
 
   const [assignments, setAssignments] = useState<Assignment[]>([]);
 
   const loadAssignments = async () => {
     if (!cid) return;
-    const list = await client.findAssignmentsForCourse(cid as string);
+    const list = await client.findAssignmentsForCourse(cid);
     setAssignments(list);
   };
 
@@ -31,7 +31,7 @@ export default function AssignmentsPage() {
   }, [cid]);
 
   const onDelete = async (aid: string) => {
-    await client.deleteAssignment(aid);
+    await client.deleteAssignment(cid as string, aid);
     setAssignments(assignments.filter((a) => a._id !== aid));
   };
 
@@ -42,7 +42,9 @@ export default function AssignmentsPage() {
 
         <Button
           variant="primary"
-          onClick={() => router.push(`/Courses/${cid}/Assignments/Editor`)}
+          onClick={() =>
+            router.push(`/Courses/${cid}/Assignments/Editor`)
+          }
         >
           + Add Assignment
         </Button>
@@ -57,7 +59,9 @@ export default function AssignmentsPage() {
             <div
               role="button"
               onClick={() =>
-                router.push(`/Courses/${cid}/Assignments/Editor?id=${a._id}`)
+                router.push(
+                  `/Courses/${cid}/Assignments/Editor?id=${a._id}`
+                )
               }
             >
               <b>{a.title}</b>
@@ -67,7 +71,10 @@ export default function AssignmentsPage() {
               Points: {a.points}
             </div>
 
-            <Button variant="danger" onClick={() => onDelete(a._id)}>
+            <Button
+              variant="danger"
+              onClick={() => onDelete(a._id)}
+            >
               Delete
             </Button>
           </ListGroup.Item>

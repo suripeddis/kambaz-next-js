@@ -53,7 +53,7 @@ export default function Users() {
       password: "password123",
       email: `email${users.length + 1}@neu.edu`,
       section: "S101",
-      role: "STUDENT",
+      role: "Student",
     };
 
     const created: User = await client.createUser(newUser);
@@ -75,10 +75,10 @@ export default function Users() {
           className="form-select w-25"
         >
           <option value="">All Roles</option>
-          <option value="STUDENT">Students</option>
+          <option value="Student">Students</option>
           <option value="TA">Assistants</option>
-          <option value="FACULTY">Faculty</option>
-          <option value="ADMIN">Administrators</option>
+          <option value="Faculty">Faculty</option>
+          <option value="Admin">Administrators</option>
         </select>
 
         <input

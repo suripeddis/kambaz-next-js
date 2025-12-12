@@ -123,22 +123,17 @@ export const updateAssignment = async (
   return data;
 };
 
-export const enrollInCourse = async (
-  userId: string,
-  courseId: string
-) => {
+export const enrollInCourse = async (courseId: string) => {
   const { data } = await axiosWithCredentials.post(
-    `${USERS_API}/${userId}/courses/${courseId}`
+    `${COURSES_API}/${courseId}/enroll`
   );
   return data;
 };
 
-export const unenrollFromCourse = async (
-  userId: string,
-  courseId: string
-) => {
+
+export const unenrollFromCourse = async (courseId: string) => {
   const { data } = await axiosWithCredentials.delete(
-    `${USERS_API}/${userId}/courses/${courseId}`
+    `${COURSES_API}/${courseId}/enroll`
   );
   return data;
 };

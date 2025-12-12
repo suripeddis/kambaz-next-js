@@ -45,10 +45,10 @@ export default function CoursesPage() {
     if (!currentUser) return;
 
     if (isEnrolled(courseId)) {
-      await unenrollFromCourse(currentUser._id, courseId);
+      await unenrollFromCourse(courseId);
       setMyCourseIds((prev) => prev.filter((id) => id !== courseId));
     } else {
-      await enrollInCourse(currentUser._id, courseId);
+      await enrollInCourse(courseId);
       setMyCourseIds((prev) => [...prev, courseId]);
     }
   };

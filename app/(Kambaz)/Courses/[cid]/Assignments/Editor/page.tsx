@@ -42,19 +42,24 @@ export default function AssignmentEditor() {
         availableUntil: existing.availableUntil ?? "",
       });
     }
-  }, [aid, cid]);
+  }, [aid, cid, existing]);
 
   const save = async () => {
     try {
       if (aid) {
-        // Update existing
-        await client.updateAssignment(form);
-        dispatch(setAssignments(
-          assignments.map((a: any) => (a._id === form._id ? form : a))
-        ));
+        await client.updateAssignment(cid as string, form);
+        dispatch(
+          setAssignments(
+            assignments.map((a: any) =>
+              a._id === form._id ? form : a
+            )
+          )
+        );
       } else {
-        // Create new
-        const newAssignment = await client.createAssignment(cid, form);
+        const newAssignment = await client.createAssignment(
+          cid as string,
+          form
+        );
         dispatch(setAssignments([newAssignment, ...assignments]));
       }
       router.push(`/Courses/${cid}/Assignments`);
@@ -85,7 +90,9 @@ export default function AssignmentEditor() {
           rows={4}
           className="mb-3"
           value={form.description ?? ""}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
           id="wd-assignment-description"
         />
 
@@ -96,7 +103,10 @@ export default function AssignmentEditor() {
               type="number"
               value={form.points ?? 0}
               onChange={(e) =>
-                setForm({ ...form, points: Number(e.target.value) })
+                setForm({
+                  ...form,
+                  points: Number(e.target.value),
+                })
               }
               id="wd-assignment-points"
             />
@@ -107,7 +117,9 @@ export default function AssignmentEditor() {
             <FormControl
               type="date"
               value={form.dueDate ?? ""}
-              onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, dueDate: e.target.value })
+              }
               id="wd-assignment-due"
             />
           </div>
@@ -118,19 +130,27 @@ export default function AssignmentEditor() {
               type="date"
               value={form.availableFrom ?? ""}
               onChange={(e) =>
-                setForm({ ...form, availableFrom: e.target.value })
+                setForm({
+                  ...form,
+                  availableFrom: e.target.value,
+                })
               }
               id="wd-assignment-from"
             />
           </div>
 
           <div className="col-md-4">
-            <Form.Label className="fw-semibold mt-3">Available until</Form.Label>
+            <Form.Label className="fw-semibold mt-3">
+              Available until
+            </Form.Label>
             <FormControl
               type="date"
               value={form.availableUntil ?? ""}
               onChange={(e) =>
-                setForm({ ...form, availableUntil: e.target.value })
+                setForm({
+                  ...form,
+                  availableUntil: e.target.value,
+                })
               }
               id="wd-assignment-until"
             />
@@ -139,10 +159,18 @@ export default function AssignmentEditor() {
       </Form>
 
       <div className="d-flex gap-2">
-        <Button variant="secondary" onClick={cancel} id="wd-assignment-cancel">
+        <Button
+          variant="secondary"
+          onClick={cancel}
+          id="wd-assignment-cancel"
+        >
           Cancel
         </Button>
-        <Button variant="primary" onClick={save} id="wd-assignment-save">
+        <Button
+          variant="primary"
+          onClick={save}
+          id="wd-assignment-save"
+        >
           Save
         </Button>
       </div>

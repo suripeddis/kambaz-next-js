@@ -5,8 +5,14 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCourses } from "../Courses/reducer";
 import { toggleShowAll, enroll, unenroll } from "../Enrollments/reducer";
-import * as courseClient from "../Courses/client";
-import * as enrollmentClient from "../Enrollments/client";
+import { 
+  findMyCourses, 
+  createCourse, 
+  deleteCourse, 
+  updateCourse,
+  enrollInCourse,
+  unenrollFromCourse 
+} from "../Courses/client";
 import { FormControl, Button } from "react-bootstrap";
 import Link from "next/link";
 
@@ -29,7 +35,7 @@ export default function Dashboard() {
   });
 
   const fetchCourses = async () => {
-    const courses = await courseClient.findMyCourses();
+    const courses = await findMyCourses();
     dispatch(setCourses(courses));
   };
 
@@ -38,29 +44,29 @@ export default function Dashboard() {
   }, []);
 
   const onAddNewCourse = async () => {
-    const newCourse = await courseClient.createCourse(course);
+    const newCourse = await createCourse(course);
     dispatch(setCourses([...courses, newCourse]));
   };
 
   const onDeleteCourse = async (courseId: string) => {
-    await courseClient.deleteCourse(courseId);
+    await deleteCourse(courseId);
     dispatch(setCourses(courses.filter((c: any) => c._id !== courseId)));
   };
 
   const onUpdateCourse = async () => {
-    await courseClient.updateCourse(course);
+    await updateCourse(course);
     dispatch(
       setCourses(courses.map((c: any) => (c._id === course._id ? course : c)))
     );
   };
 
   const handleEnroll = async (courseId: string) => {
-    await enrollmentClient.enrollInCourse(currentUser._id, courseId);
+    await enrollInCourse(courseId);
     dispatch(enroll({ user: currentUser._id, course: courseId }));
   };
 
   const handleUnenroll = async (courseId: string) => {
-    await enrollmentClient.unenrollFromCourse(currentUser._id, courseId);
+    await unenrollFromCourse(courseId);
     dispatch(unenroll({ user: currentUser._id, course: courseId }));
   };
 
